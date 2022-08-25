@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pizza cart</title>
     <script src="pizza-cart-api.js"></script>
-
+    <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="//unpkg.com/alpinejs" defer></script>
 
@@ -17,22 +17,34 @@
     body{
         background-color: aqua;
     }
-    .cart{
-        background-color: azure;
-    }
+    
 </style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source Code Pro">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Pacifico">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Exo">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Dancing Script">
+
 </head>
 <body>
     <div x-data="pizzaCartWithAPIWidget" >
-        <h2>Pizza Cart with API</h2>
-        <div>Enter Name:<input type="text" x-model="username"></input></div>
-        <div x-text="message"></div>
-        <div x-text="cartID"></div>
-        <strong x-text="pizzas.length"></strong>
-        <div class="cart">
-        <div>
-            Total:<strong x-text="cart.total"></strong>
+        <h2 class="header">Pizza Cart with API</h2>
+        <div class="sub-header">
+        <div class="f1">
+            Enter Name:<input type="text" x-model="username"></input>
         </div>
+        <span><div x-text="message"></div></span>
+        <strong>Cart ID:<div x-text="cartID"></div></strong>
+        </div>
+        <div class="sub-header">
+            <div class="f3">
+                <span x-text="pizzas.length"></span> Items To Order
+            </div>
+            <div class="f2">
+                Total:<strong x-text="cart.total"></strong>
+            </div>
+        </div>
+        <div class="cart">
+       
         <div>
         <table>
             <tr>
@@ -43,19 +55,60 @@
             <template x-for="pizza in cart.pizzas">
                 <tr>
                     <td x-text="pizza.flavour"></td>
-                    <td x-text="pizza.qty">
-                        <button x-on:click="buy(pizza)">+</button>
-                        <button x-on:click="remove(pizza)" x-show="pizza.qty >0">-</button>
+                    <td>
+                        <button x-on:click="clearPizza(pizza)" class="sub-add">-</button>
+                        <span x-text="pizza.qty"></span>
+                        <button x-on:click="buy(pizza)" class="sub-add">+</button>
                     </td>
                     <td x-text="pizza.total.toFixed(2)"></td>
                 </tr>
             </template>
-            <tr><button x-on:click="">Pay</button></tr>
+            <tr x-show="cart.total.toFixed(2) > 0">
+                <td colspan="2">Total</td>
+                <td>
+                    R<span x-text="cart.total.toFixed(2) "></span>
+                </td>
+            </tr>
+
+            <tr x-show="cart.total.toFixed(2) > 0">
+                <td colspan="2">
+                    <div x-show="payNow">
+
+                        <div class="message" x-text="paymentMessage"></div>
+
+                        <div class="input">
+                            <label for="amount">Payment Amount: </label>
+                            <span class="currency-code">R</span>
+                            <input type="text" placeholder="Enter Payment Amount" id="amount"
+                                x-model="paymentAmount">
+                            <button x-on:click="makePayment" class="btn">
+                                PAY NOW</button>
+                        </div>
+
+                    </div>
+                </td>
+                <td>
+                    <button x-show="!payNow" x-on:click="payNow=true" class="btn">
+                        CHECKOUT</button>
+                </td>
+            </tr>
         </table>
 
         </div>
         </div>
-
+        <div class="sub-header">
+            
+            <div class="f2">
+                <label class="radio-btn" x-on:click="allPizza() = true">All
+                    <input type="radio" checked="checked" name="radio">
+                    <span class="checkmark"></span>
+                </label>
+                <label class="radio-btn" x-on:click="featured() = true">Featured
+                    <input type="radio" name="radio">
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+        </div>
         <table>
             <template x-for="pizza in pizzas">
                 <tr>
